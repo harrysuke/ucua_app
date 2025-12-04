@@ -27,17 +27,17 @@ class UnsafeCondition {
 
   factory UnsafeCondition.fromJson(Map<String, dynamic> json) {
     return UnsafeCondition(
-      id: json['id'],
-      locationId: json['LocationId'],
-      conditionDetails: json['conditionDetails'],
-      staffId: json['staffId'],
-      submitdate: json['submitdate'],
-      createby: json['createby'],
-      createdate: json['createdate'],
-      observerName: json['observerName'],
-      observerDepartment: json['observerDepartment'],
-      observerEmail: json['observerEmail'],
-      observerDatetime: json['observerDatetime'],
+      id: json['id'] ?? 0,
+      locationId: json['LocationId'] ?? 0,
+      conditionDetails: json['conditionDetails'] ?? 0,
+      staffId: json['staffId'] ?? 0,
+      submitdate: json['submitdate'] ?? 0,
+      createby: json['createby'] ?? 0,
+      createdate: json['createdate'] ?? 0,
+      observerName: json['observerName'] ?? 0,
+      observerDepartment: json['observerDepartment'] ?? 0,
+      observerEmail: json['observerEmail'] ?? 0,
+      observerDatetime: json['observerDatetime'] ?? 0,
     );
   }
 

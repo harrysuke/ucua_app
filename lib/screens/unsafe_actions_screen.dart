@@ -89,6 +89,125 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
     );
   }
 
+  void _showEditActionDialog(UnsafeAction action) {
+    // Pre-populate the form with existing data
+    final TextEditingController violatorNameController = TextEditingController(text: action.violatorName);
+    final TextEditingController locationController = TextEditingController(text: action.locationId);
+    final TextEditingController actionTakenController = TextEditingController(text: action.actionTaken);
+    final TextEditingController remarkController = TextEditingController(text: action.remark);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Unsafe Action'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                    controller: violatorNameController,
+                    decoration: const InputDecoration(labelText: 'Violator Name')),
+                TextField(
+                    controller: locationController,
+                    decoration: const InputDecoration(labelText: 'Location ID')),
+                TextField(
+                    controller: actionTakenController,
+                    decoration: const InputDecoration(labelText: 'Action Taken')),
+                TextField(
+                    controller: remarkController,
+                    decoration: const InputDecoration(labelText: 'Remark')),
+                // Add other TextFields as needed
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Create an updated action object
+                final updatedAction = UnsafeAction(
+                  id: action.id, // Keep the original ID
+                  locationId: locationController.text,
+                  offenceCode: action.offenceCode,
+                  staffId: action.staffId,
+                  violatorName: violatorNameController.text,
+                  violatorContactNo: action.violatorContactNo,
+                  violatorDept: action.violatorDept,
+                  violatorCompany: action.violatorCompany,
+                  violatorIc: action.violatorIc,
+                  violatorDatetime: action.violatorDatetime,
+                  submitdate: action.submitdate,
+                  actionTaken: actionTakenController.text,
+                  remark: remarkController.text,
+                  createby: action.createby,
+                  createdate: action.createdate,
+                  observerName: action.observerName,
+                  observerDepartment: action.observerDepartment,
+                  observerEmail: action.observerEmail,
+                  observerDatetime: action.observerDatetime,
+                );
+
+                try {
+                  await _apiService.updateUnsafeAction(action.id!, updatedAction);
+                  Navigator.pop(context);
+                  _refreshActions();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Action updated successfully')),
+                  );
+                } catch (e) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to update action: $e')),
+                  );
+                }
+              },
+              child: const Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(UnsafeAction action) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete the unsafe action by ${action.violatorName}?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await _apiService.deleteUnsafeAction(action.id!);
+                  Navigator.pop(context);
+                  _refreshActions();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Action deleted successfully')),
+                  );
+                } catch (e) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to delete action: $e')),
+                  );
+                }
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,12 +236,14 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(icon: const Icon(Icons.edit), onPressed: () {
-                      // TODO: Implement edit functionality
-                    }),
-                    IconButton(icon: const Icon(Icons.delete), onPressed: () async {
-                      // TODO: Implement delete functionality
-                    }),
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => _showEditActionDialog(action),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _showDeleteConfirmationDialog(action),
+                    ),
                   ],
                 ),
               );

@@ -1,3 +1,5 @@
+import 'package:ucua_app/services/api_service.dart';
+
 class UserModel {
   final String companyCode;
   final String branchCode;
