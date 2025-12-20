@@ -89,13 +89,21 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
     );
   }
 
+
   void _showEditActionDialog(UnsafeAction action) {
-    // Pre-populate the form with existing data
+    // 1. Guard Clause: Check if ID exists before even opening or processing
+    if (action.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: '+ action.id.toString() +' Action ID is missing.')),
+      );
+      return;
+    }
+
     final TextEditingController violatorNameController = TextEditingController(text: action.violatorName);
     final TextEditingController locationController = TextEditingController(text: action.locationId);
     final TextEditingController actionTakenController = TextEditingController(text: action.actionTaken);
     final TextEditingController remarkController = TextEditingController(text: action.remark);
-
+    final TextEditingController id = TextEditingController(text: action.id.toString());
     showDialog(
       context: context,
       builder: (context) {
@@ -104,32 +112,20 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
           content: SingleChildScrollView(
             child: Column(
               children: [
-                TextField(
-                    controller: violatorNameController,
-                    decoration: const InputDecoration(labelText: 'Violator Name')),
-                TextField(
-                    controller: locationController,
-                    decoration: const InputDecoration(labelText: 'Location ID')),
-                TextField(
-                    controller: actionTakenController,
-                    decoration: const InputDecoration(labelText: 'Action Taken')),
-                TextField(
-                    controller: remarkController,
-                    decoration: const InputDecoration(labelText: 'Remark')),
-                // Add other TextFields as needed
+                TextField(controller: violatorNameController, decoration: const InputDecoration(labelText: 'Violator Name')),
+                TextField(controller: locationController, decoration: const InputDecoration(labelText: 'Location ID')),
+                TextField(controller: actionTakenController, decoration: const InputDecoration(labelText: 'Action Taken')),
+                TextField(controller: remarkController, decoration: const InputDecoration(labelText: 'Remark')),
+                TextField(controller: id, decoration: const InputDecoration(labelText: 'ID'), enabled: false),
               ],
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
             TextButton(
               onPressed: () async {
-                // Create an updated action object
                 final updatedAction = UnsafeAction(
-                  id: action.id, // Keep the original ID
+                  id: action.id,
                   locationId: locationController.text,
                   offenceCode: action.offenceCode,
                   staffId: action.staffId,
@@ -151,14 +147,17 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
                 );
 
                 try {
+                  // Use action.id safely since we checked it above
                   await _apiService.updateUnsafeAction(action.id!, updatedAction);
+
+                  if (!mounted) return;
                   Navigator.pop(context);
                   _refreshActions();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Action updated successfully')),
                   );
                 } catch (e) {
-                  Navigator.pop(context);
+                  if (!mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Failed to update action: $e')),
                   );
@@ -232,7 +231,7 @@ class _UnsafeActionsScreenState extends State<UnsafeActionsScreen> {
               final action = actions[index];
               return ListTile(
                 title: Text(action.violatorName),
-                subtitle: Text('Location: ${action.locationId}\nDate: ${action.submitdate}'),
+                subtitle: Text('ID: ${action.id}\nLocation: ${action.locationId}\nDate: ${action.submitdate}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

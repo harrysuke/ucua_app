@@ -43,7 +43,7 @@ class UnsafeAction {
 
   factory UnsafeAction.fromJson(Map<String, dynamic> json) {
     return UnsafeAction(
-      id: json['id'],
+      id: json['Id'],
       locationId: json['LocationId'],
       offenceCode: json['OffenceCode'] ?? '',
       staffId: json['staffId'],
@@ -67,6 +67,7 @@ class UnsafeAction {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'LocationId': locationId,
       'OffenceCode': offenceCode,
       'staffId': staffId,

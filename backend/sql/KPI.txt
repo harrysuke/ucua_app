@@ -1,0 +1,35 @@
+Create KPIs
+
+Based on your analysis, create KPIs that provide actionable insights. Here are some examples:
+
+Unsafe Condition Rate:
+Formula: (Total number of unsafe conditions / Total number of incidents) x 100
+Target: Reduce the rate by 10% within the next quarter
+
+Location-Specific Offense Rate:
+Formula: (Total number of offenses at a location / Total number of incidents at that location) x 100
+Target: Reduce the rate by 15% at the highest-offense location within the next quarter
+
+Company-Specific Compliance Rate:
+Formula: (Total number of compliant companies / Total number of companies) x 100
+Target: Increase the rate by 20% within the next quarter
+
+Top 3 Most Common Unsafe Actions:
+KPI: Track the top 3 most common unsafe actions and monitor their frequency
+Target: Reduce the frequency of the top 2 most common unsafe actions by 20% within the next quarter
+
+Employee Engagement Index:
+Formula: (Employee feedback survey score / Total number of employees) x 100
+Target: Increase the index by 10% within the next quarter
+
+
+
+
+
+
+
+
+
+
+
+
